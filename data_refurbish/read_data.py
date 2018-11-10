@@ -12,9 +12,7 @@ def acquire_dataframe(filename='../data/result.json'):
     df = set_dataframe_types(df)
     df['createdAt'] = df['createdAt'].map(convert_timestamp)
     df['updatedAt'] = df['updatedAt'].map(convert_timestamp)
-    print(df.dtypes)
-    print(df.head(5))
-    print(df.describe())
+    return df
 
 
 def read_data(filename):
@@ -37,6 +35,7 @@ def reduce(json_data):
                      'forkCount': value['forkCount'],
                      'commitCount': value['defaultBranchRef']['target']['history']['totalCount'],
                      'description': value['description'],
+                     'watchers': value['watchers']['totalCount'],
                      'diskUsage': value['diskUsage']}
         new_series = Series(new_value)
         series_dict[key] = new_series
@@ -47,7 +46,7 @@ def reduce(json_data):
 def set_dataframe_types(data_frame):
     data_types = {'nameWithOwner': str, 'createdAt': str, 'updatedAt': str, 'stars': np.int64,
                   'releases': np.int64, 'isFork': np.bool_, 'forkCount': np.int64, 'commitCount': np.int64,
-                  'description': str, 'diskUsage': np.int64}
+                  'description': str, 'watchers': np.int64, 'diskUsage': np.int64}
     return data_frame.astype(data_types)
 
 
@@ -55,4 +54,6 @@ def convert_timestamp(timestamp):
     return datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
 
 
-acquire_dataframe()
+df = acquire_dataframe('../data/sample.json')
+print(df.dtypes)
+df.to_pickle('sample_pickle.pkl')
