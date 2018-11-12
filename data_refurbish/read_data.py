@@ -52,8 +52,3 @@ def set_dataframe_types(data_frame):
 
 def convert_timestamp(timestamp):
     return datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
-
-
-df = acquire_dataframe('../data/sample.json')
-print(df.dtypes)
-df.to_pickle('sample_pickle.pkl')
